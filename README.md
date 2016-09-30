@@ -1,5 +1,5 @@
 # Technical test task
-  Formulation of the:
+  Formulation:
   
 Write a utility which receives as a parameter the path to the image and histogram.
 Example: imhist -i original.png -o hist.png
