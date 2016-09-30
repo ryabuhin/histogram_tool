@@ -1,13 +1,13 @@
 # Technical test task
   Formulation:
   
-Write a utility which receives as a parameter the path to the image and histogram.
-Example: imhist -i original.png -o hist.png
--i <input file>
+Write a utility which receives as a parameter the path to the image and histogram.  
+Example: imhist -i original.png -o hist.png  
+-i <input file>  
 -o <output file>
-
-Technologies: Java, Maven.
-OS: Ubuntu 16.04.
+  
+Technologies: Java, Maven.  
+OS: Ubuntu 16.04.  
 Also was written bash-script to solve the compatibility of the JVM and absolute paths.
 
 For test the application run the script imhist.sh that is in the folder imhist, but is necessary that in this same folder
