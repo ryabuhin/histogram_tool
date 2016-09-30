@@ -54,8 +54,7 @@ public class GistImageUtil {
 			templateOutImage = ImageIO.read(getClass().getClassLoader().getResourceAsStream("template.jpg"));
 			userImage = ImageIO.read(getClass().getClassLoader().getResourceAsStream(wayInImage));
 		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("Exception with generating File into BufferedImage stream");
+			System.out.println("Exception with generating File into BufferedImage stream.");
 		}
 	}
 
@@ -133,8 +132,9 @@ public class GistImageUtil {
 		try {
 			ImageIO.write(templateOutImage, wayOutImage.substring(wayOutImage.indexOf('.') + 1, wayOutImage.length()),
 					new File(wayOutImage));
+			System.out.println("The histogram has been successfully rendered.");
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Error with writing histogram on disk ;( ");
 		}
 	}
 
