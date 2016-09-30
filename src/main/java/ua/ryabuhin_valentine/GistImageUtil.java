@@ -11,28 +11,31 @@ import javax.imageio.ImageIO;
 public class GistImageUtil {
 
 	private BufferedImage userImage;
-	private BufferedImage templateImage;
-	private String wayInImage;
-	private String wayOutImage;
+	private BufferedImage templateOutImage;
+
+	private final String wayInImage;
+	private final String wayOutImage;
 
 	int brightPixel[] = new int[256];
 
+	/* Variables linked to the static template(template.jpg) */
 	private final int TEMPLATE_COLUMN_H = 680;
 	private final int TEMPLATE_COLUMN_W = 2;
 	private final int TEMPLATE_OFFSET_L = 66;
 	private final int TEMPLATE_OFFSET_D = 700;
 	private final int TEMPLATE_INTERVAL_H = 10;
 	private final int TEMPLATE_INTERVAL_COLUMN = 2;
-	private final int BLACK_PIXEL = (0xFF << 24);
 
-	private ClassLoader classLoader = getClass().getClassLoader();
+	private final int BLACK_PIXEL = (0xFF << 24);
 
 	public GistImageUtil(String wayIn, String wayOut) {
 		this.wayInImage = wayIn;
-		System.out.println(wayInImage);
 		this.wayOutImage = wayOut;
 	}
 
+	/**
+	 * Starting processing lifecycle
+	 */
 	public void run() {
 
 		initImages();
@@ -43,18 +46,24 @@ public class GistImageUtil {
 
 	}
 
+	/**
+	 * Function to initialize the path of the incoming and outgoing image
+	 */
 	private void initImages() {
-		File userImageFile = new File(wayInImage);
-		File templateImageFile = new File(classLoader.getResource("template.jpg").getFile());
 		try {
-			userImage = ImageIO.read(userImageFile);
-			templateImage = ImageIO.read(templateImageFile);
+			templateOutImage = ImageIO.read(getClass().getClassLoader().getResourceAsStream("template.jpg"));
+			userImage = ImageIO.read(getClass().getClassLoader().getResourceAsStream(wayInImage));
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Exception with generating File into BufferedImage stream");
 		}
 	}
 
+	/**
+	 * Scaling images up to 1024x768. <br>
+	 * P.S: The proportion still remains the same, so is convenient for
+	 * installation interval value on the vertical axis
+	 */
 	private void scalingImageToTemplate() {
 		Image imageScaled = userImage.getScaledInstance(1024, 768, Image.SCALE_AREA_AVERAGING);
 		BufferedImage changedUserImage = new BufferedImage(1024, 768, BufferedImage.TYPE_INT_RGB);
@@ -65,6 +74,12 @@ public class GistImageUtil {
 		userImage.setData(changedUserImage.getRaster());
 	}
 
+	/**
+	 * 
+	 * @param pixel
+	 *            - Pixel brightness value which will be calculated
+	 * @return brightness value in <b>integer</b>
+	 */
 	private int computeBrightness(int pixel) {
 		int brightness = 0;
 		int red = (pixel >> 16) & 0xFF;
@@ -74,6 +89,9 @@ public class GistImageUtil {
 		return brightness;
 	}
 
+	/**
+	 * Collect statistics pixel-brightness
+	 */
 	public void countingPixelBright() {
 		/* Counting brightness of all pixels users image */
 		for (int i = 0; i < userImage.getHeight(); i++) {
@@ -83,6 +101,9 @@ public class GistImageUtil {
 		}
 	}
 
+	/**
+	 * Draw the histogram of the image to the template.jpg
+	 */
 	private void drawGist() {
 		for (int i = 0; i < brightPixel.length; i++) {
 			/* Calculate column height */
@@ -97,18 +118,20 @@ public class GistImageUtil {
 				}
 			}
 			int brInterval = (i * 2) + TEMPLATE_OFFSET_L + (TEMPLATE_INTERVAL_COLUMN * i);
-			System.out.println("column_height: " + column_height);
 			for (int y = 0; y < column_height; y++) {
 				for (int x = 0; x < TEMPLATE_COLUMN_W; x++) {
-					templateImage.setRGB((x + brInterval), TEMPLATE_OFFSET_D - y, BLACK_PIXEL);
+					templateOutImage.setRGB((x + brInterval), TEMPLATE_OFFSET_D - y, BLACK_PIXEL);
 				}
 			}
 		}
 	}
 
+	/**
+	 * Write and save histogram in the right resolution and name
+	 */
 	private void writeImage() {
 		try {
-			ImageIO.write(templateImage, wayOutImage.substring(wayOutImage.indexOf('.') + 1, wayOutImage.length()),
+			ImageIO.write(templateOutImage, wayOutImage.substring(wayOutImage.indexOf('.') + 1, wayOutImage.length()),
 					new File(wayOutImage));
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -24,8 +24,6 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
 							<mainClass>ua.ryabuhin_valentine.Main</mainClass>
 						</manifest>
 					</archive>
